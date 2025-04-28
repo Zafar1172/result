@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ur">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>آمدن و خرچ کارڈ</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400..700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Nastaliq Urdu', serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 20px;
+            background-color: #f8f8f8;
+        }
+        .card-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 30px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            direction: rtl; /* Right-to-Left for Urdu */
+            text-align: right;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 5px;
+            color: #0056b3; /* A shade of blue */
+        }
+        .header p {
+            font-size: 16px;
+            color: #555;
+            margin-bottom: 15px;
+        }
+        .section-title {
+            font-size: 22px;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            color: #0056b3;
+            border-bottom: 2px solid #0056b3;
+            padding-bottom: 5px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: right; /* Align text to the right */
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        .summary {
+            margin-top: 30px;
+            padding: 20px;
+            border: 1px solid #0056b3;
+            border-radius: 8px;
+            background-color: #e9f7ff; /* Light blue background */
+        }
+        .summary p {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        .summary p strong {
+            color: #004085; /* Darker blue */
+        }
+         /* Adjust alignment for numbers or LTR text within RTL */
+        .ltr-text {
+            direction: ltr;
+            text-align: left;
+            display: inline-block; /* Helps maintain layout */
+        }
+
+        /* Print styles */
+        @media print {
+            body {
+                margin: 0;
+                background-color: #fff;
+            }
+            .card-container {
+                box-shadow: none;
+                border: none;
+                margin: 0;
+                padding: 15mm; /* Add print margins */
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="card-container">
+
+    <div class="header">
+        <h1>[ادارے کا نام یہاں لکھیں]</h1>
+        <p>آمدن و خرچ کا ریکارڈ</p>
+        <p>مہینہ: [مہینہ لکھیں]، سال: [سال لکھیں]</p>
+    </div>
+
+    <div class="income-section">
+        <h2 class="section-title">آمدن کا ریکارڈ</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>تاریخ</th>
+                    <th>آمدن کا ذریعہ</th>
+                    <th>رقم</th>
+                    <th>نوٹس</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>[تاریخ]</td>
+                    <td>[ذریعہ]</td>
+                    <td class="ltr-text">[رقم]</td>
+                    <td>[نوٹس]</td>
+                </tr>
+                 <tr>
+                    <td>[تاریخ]</td>
+                    <td>[ذریعہ]</td>
+                    <td class="ltr-text">[رقم]</td>
+                    <td>[نوٹس]</td>
+                </tr>
+                </tbody>
+        </table>
+    </div>
+
+    <div class="expenditure-section">
+        <h2 class="section-title">خرچ کا ریکارڈ</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>تاریخ</th>
+                    <th>خرچ کی نوعیت</th>
+                    <th>رقم</th>
+                    <th>نوٹس</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>[تاریخ]</td>
+                    <td>[نوعیت]</td>
+                    <td class="ltr-text">[رقم]</td>
+                    <td>[نوٹس]</td>
+                </tr>
+                 <tr>
+                    <td>[تاریخ]</td>
+                    <td>[نوعیت]</td>
+                    <td class="ltr-text">[رقم]</td>
+                    <td>[نوٹس]</td>
+                </tr>
+                </tbody>
+        </table>
+    </div>
+
+    <div class="summary">
+        <h2 class="section-title" style="margin-top: 0; border-bottom: none;">خلاصہ</h2>
+        <p><strong>مجموعی آمدن:</strong> <span class="ltr-text">[کل آمدن]</span> روپے</p>
+        <p><strong>مجموعی خرچ:</strong> <span class="ltr-text">[کل خرچ]</span> روپے</p>
+        <p><strong>بچت / خسارہ:</strong> <span class="ltr-text">[بچت یا خسارہ]</span> روپے</p>
+    </div>
+
+</div>
+
+</body>
+</html>
