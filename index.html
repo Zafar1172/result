@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Result Card Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Noto+Nastaliq+Urdu:wght@400..700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif; /* Default font */
+            background-color: #f0f4f8; /* Light background */
+            color: #333;
+            line-height: 1.6;
+        }
+        /* Apply Urdu font to elements displaying Urdu text */
+        .urdu-text {
+            font-family: 'Noto Nastaliq Urdu', serif;
+        }
+        .container {
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .form-section, .preview-section {
+            padding: 20px;
+            border: 1px solid #e2e8f0; /* Soft border */
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+        .subject-input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+        .subject-input-group input {
+            flex-grow: 1;
+        }
+        .result-card {
+            border: 2px solid #3182ce; /* Professional blue border */
+            padding: 30px;
+            border-radius: 8px;
+            background-color: #ebf8ff; /* Light blue background */
+            position: relative; /* Needed for absolute positioning of logo */
+            /* Apply RTL direction for Urdu content */
+            direction: rtl;
+            text-align: right;
+        }
+         .result-card h2, .result-card h3 {
+            text-align: center;
+            color: #2b6cb0; /* Darker blue */
+            margin-bottom: 10px;
+        }
+        .result-card .academy-logo {
+            max-width: 80px;
+            height: auto;
+            margin: 0 auto 20px;
+            display: block;
+        }
+        .result-card .student-details, .result-card .summary {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #90cdf4; /* Lighter blue border */
+            border-radius: 4px;
+            background-color: #ffffff; /* White background for details */
+        }
+         .result-card .student-details p, .result-card .summary p {
+            margin-bottom: 5px;
+            /* Ensure text alignment is right for RTL */
+            text-align: right;
+        }
+        .result-card table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+             /* Ensure table text alignment is right for RTL */
+            text-align: right;
+        }
+        .result-card th, .result-card td {
+            border: 1px solid #90cdf4;
+            padding: 10px;
+             /* Ensure cell text alignment is right for RTL */
+            text-align: right;
+        }
+        .result-card th {
+            background-color: #bee3f8; /* Lightest blue */
+            font-weight: 600;
+        }
+        .result-card .summary p strong {
+            color: #2b6cb0;
+        }
+        .print-ready {
+            margin: 20mm; /* Example margin for print */
+        }
+        /* Adjust specific elements for LTR within RTL container if needed */
+        .ltr-text {
+            direction: ltr;
+            text-align: left;
+        }
+
+        /* Hide elements not needed for print */
+        @media print {
+            body {
+                background-color: #fff;
+            }
+            .container {
+                box-shadow: none;
+                margin: 0;
+                padding: 0;
+            }
+            .form-section, .buttons {
+                display: none !important;
+            }
+            .preview-section {
+                display: block !important; /* Ensure preview is visible */
+                border: none;
+                padding: 0;
+                margin: 0;
+            }
+            .result-card {
+                border: none; /* Remove border for clean print */
+                box-shadow: none;
+                background-color: #fff;
+                padding: 0;
+            }
+            .result-card .academy-logo {
+                max-width: 60px; /* Smaller logo for print */
+            }
+             .print-ready {
+                margin: 10mm; /* Adjust margin for print */
+            }
+        }
+    </style>
+</head>
+<body class="p-4">
+
+    <div class="container">
+        <h1 class="text-3xl font-bold text-center text-gray-800 mb-6">Result Card Generator</h1>
+
+        <div id="formSection" class="form-section">
+            <h2 class="text-2xl font-semibold mb-4 text-gray-700">Student Information</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                <div>
+                    <label for="studentName" class="block text-sm font-medium text-gray-700">Student Name:</label>
+                    <input type="text" id="studentName" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2">
+                </div>
+                <div>
+                    <label for="fatherName" class="block text-sm font-medium text-gray-700">Father's Name:</label>
+                    <input type="text" id="fatherName" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2">
+                </div>
+                <div>
+                    <label for="rollNumber" class="block text-sm font-medium text-gray-700">Roll Number:</label>
+                    <input type="text" id="rollNumber" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2">
+                </div>
+                <div>
+                    <label for="studentClass" class="block text-sm font-medium text-gray-700">Class:</label>
+                    <input type="text" id="studentClass" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2">
+                </div>
+            </div>
+
+            <h2 class="text-2xl font-semibold mb-4 text-gray-700">Subjects and Marks</h2>
+            <div id="subjectsContainer">
+                <div class="subject-input-group">
+                    <input type="text" class="subject-name mt-1 block rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2" placeholder="Subject Name">
+                    <input type="number" class="subject-marks mt-1 block w-24 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2" placeholder="Marks" min="0">
+                    <button type="button" class="remove-subject bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600 transition duration-200">Remove</button>
+                </div>
+            </div>
+            <button type="button" id="addSubjectBtn" class="mt-4 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition duration-200">Add Subject</button>
+
+            <h2 class="text-2xl font-semibold mb-4 mt-6 text-gray-700">Academy Information</h2>
+             <div>
+                <label for="academyName" class="block text-sm font-medium text-gray-700">Academy Name:</label>
+                <input type="text" id="academyName" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2">
+            </div>
+            <div class="mt-4">
+                <label for="academyLogo" class="block text-sm font-medium text-gray-700">Academy Logo:</label>
+                <input type="file" id="academyLogo" accept="image/*" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+            </div>
+
+            <div class="buttons mt-6 text-center">
+                <button type="button" id="previewBtn" class="bg-green-500 text-white px-6 py-2 rounded-md hover:bg-green-600 transition duration-200 mr-4">Preview Result Card</button>
+            </div>
+        </div>
+
+        <div id="previewSection" class="preview-section hidden">
+            <div id="resultCard" class="result-card print-ready urdu-text">
+                 <div class="text-center mb-6">
+                    <img id="academyLogoPreview" src="https://placehold.co/80x80/e2e8f0/a0aec0?text=Logo" alt="Academy Logo" class="academy-logo">
+                    <h2 id="academyNamePreview" class="text-2xl font-bold text-gray-800 urdu-text">اکیڈمی کا نام</h2>
+                    <p class="text-gray-600 text-sm urdu-text">رزلٹ کارڈ</p>
+                </div>
+
+                <div class="student-details urdu-text">
+                    <h3 class="text-xl font-semibold mb-3 text-gray-700 urdu-text">طالب علم کی تفصیلات</h3>
+                    <p><strong>نام طالب علم:</strong> <span id="previewStudentName"></span></p>
+                    <p><strong>نام والد:</strong> <span id="previewFatherName"></span></p>
+                    <p><strong>رول نمبر:</strong> <span id="previewRollNumber"></span></p>
+                    <p><strong>کلاس:</strong> <span id="previewStudentClass"></span></p>
+                </div>
+
+                <div class="subject-results urdu-text">
+                     <h3 class="text-xl font-semibold mb-3 text-gray-700 urdu-text">مضامین کے نتائج</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>مضمون</th>
+                                <th>نمبرات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="subjectResultsTableBody">
+                            </tbody>
+                    </table>
+                </div>
+
+                <div class="summary grid grid-cols-1 md:grid-cols-3 gap-4 text-center urdu-text">
+                    <div><p><strong>کل نمبرات:</strong> <span id="previewTotalMarks"></span></p></div>
+                    <div><p><strong>فیصد:</strong> <span id="previewPercentage"></span>%</p></div>
+                    <div><p><strong>گریڈ:</strong> <span id="previewGrade"></span></p></div>
+                </div>
+
+                <div class="text-left mt-6 text-gray-600 text-sm urdu-text" style="direction: rtl;">
+                    اجراء کی تاریخ: <span id="dateOfIssue" class="ltr-text" style="display: inline-block;"></span>
+                </div>
+            </div>
+
+            <div class="buttons mt-6 text-center">
+                <button type="button" id="generatePdfBtn" class="bg-purple-500 text-white px-6 py-2 rounded-md hover:bg-purple-600 transition duration-200 mr-4">Download as PDF</button>
+                <button type="button" id="backToFormBtn" class="bg-gray-500 text-white px-6 py-2 rounded-md hover:bg-gray-600 transition duration-200">Back to Form</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const formSection = document.getElementById('formSection');
+            const previewSection = document.getElementById('previewSection');
+            const subjectsContainer = document.getElementById('subjectsContainer');
+            const addSubjectBtn = document.getElementById('addSubjectBtn');
+            const previewBtn = document.getElementById('previewBtn');
+            const generatePdfBtn = document.getElementById('generatePdfBtn');
+            const backToFormBtn = document.getElementById('backToFormBtn');
+
+            // Preview elements
+            const academyLogoPreview = document.getElementById('academyLogoPreview');
+            const academyNamePreview = document.getElementById('academyNamePreview');
+            const previewStudentName = document.getElementById('previewStudentName');
+            const previewFatherName = document.getElementById('previewFatherName');
+            const previewRollNumber = document.getElementById('previewRollNumber');
+            const previewStudentClass = document.getElementById('previewStudentClass');
+            const subjectResultsTableBody = document.getElementById('subjectResultsTableBody');
+            const previewTotalMarks = document.getElementById('previewTotalMarks');
+            const previewPercentage = document.getElementById('previewPercentage');
+            const previewGrade = document.getElementById('previewGrade');
+            const dateOfIssue = document.getElementById('dateOfIssue');
+
+            // Add initial subject input group
+            addSubjectInputGroup();
+
+            // Event listener for adding subject fields
+            addSubjectBtn.addEventListener('click', addSubjectInputGroup);
+
+            // Event listener for removing subject fields (using event delegation)
+            subjectsContainer.addEventListener('click', (e) => {
+                if (e.target.classList.contains('remove-subject')) {
+                    removeSubjectInputGroup(e.target);
+                }
+            });
+
+            // Event listener for Preview button
+            previewBtn.addEventListener('click', showPreview);
+
+            // Event listener for Back to Form button
+            backToFormBtn.addEventListener('click', showForm);
+
+            // Event listener for Generate PDF button
+            generatePdfBtn.addEventListener('click', generatePdf);
+
+            // Function to add a new subject input group
+            function addSubjectInputGroup() {
+                const div = document.createElement('div');
+                div.classList.add('subject-input-group');
+                div.innerHTML = `
+                    <input type="text" class="subject-name mt-1 block rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2" placeholder="Subject Name">
+                    <input type="number" class="subject-marks mt-1 block w-24 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2" placeholder="Marks" min="0">
+                    <button type="button" class="remove-subject bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600 transition duration-200">Remove</button>
+                `;
+                subjectsContainer.appendChild(div);
+
+                // Disable remove button if only one subject remains
+                updateRemoveButtons();
+            }
+
+            // Function to remove a subject input group
+            function removeSubjectInputGroup(button) {
+                if (subjectsContainer.children.length > 1) {
+                    button.closest('.subject-input-group').remove();
+                    updateRemoveButtons();
+                }
+            }
+
+            // Function to update the state of remove buttons
+            function updateRemoveButtons() {
+                 const removeButtons = subjectsContainer.querySelectorAll('.remove-subject');
+                 if (removeButtons.length === 1) {
+                     removeButtons[0].disabled = true;
+                     removeButtons[0].classList.add('opacity-50', 'cursor-not-allowed');
+                 } else {
+                     removeButtons.forEach(btn => {
+                         btn.disabled = false;
+                         btn.classList.remove('opacity-50', 'cursor-not-allowed');
+                     });
+                 }
+            }
+
+
+            // Function to validate form fields
+            function validateForm() {
+                const studentName = document.getElementById('studentName').value.trim();
+                const fatherName = document.getElementById('fatherName').value.trim();
+                const rollNumber = document.getElementById('rollNumber').value.trim();
+                const studentClass = document.getElementById('studentClass').value.trim();
+                const academyName = document.getElementById('academyName').value.trim();
+                const subjectNames = subjectsContainer.querySelectorAll('.subject-name');
+                const subjectMarks = subjectsContainer.querySelectorAll('.subject-marks');
+
+                if (!studentName || !fatherName || !rollNumber || !studentClass || !academyName) {
+                    alert('Please fill in all student and academy details.');
+                    return false;
+                }
+
+                if (subjectNames.length === 0) {
+                     alert('Please add at least one subject.');
+                     return false;
+                }
+
+                for (let i = 0; i < subjectNames.length; i++) {
+                    if (!subjectNames[i].value.trim() || !subjectMarks[i].value.trim() || isNaN(parseInt(subjectMarks[i].value.trim()))) {
+                        alert('Please fill in all subject names and valid marks.');
+                        return false;
+                    }
+                     if (parseInt(subjectMarks[i].value.trim()) < 0) {
+                         alert('Marks cannot be negative.');
+                         return false;
+                     }
+                }
+
+                return true;
+            }
+
+            // Function to calculate total marks, percentage, and grade
+            function calculateResults() {
+                const subjectMarks = subjectsContainer.querySelectorAll('.subject-marks');
+                let totalMarks = 0;
+                let maxTotalMarks = 0; // Assuming max marks per subject is 100 for percentage calculation
+
+                subjectMarks.forEach(input => {
+                    const marks = parseInt(input.value.trim());
+                    if (!isNaN(marks)) {
+                        totalMarks += marks;
+                        maxTotalMarks += 100; // Add 100 for each subject
+                    }
+                });
+
+                const percentage = maxTotalMarks > 0 ? (totalMarks / maxTotalMarks) * 100 : 0;
+                const grade = assignGrade(percentage);
+
+                return { totalMarks, percentage, grade };
+            }
+
+            // Function to assign grade based on percentage
+            function assignGrade(percentage) {
+                if (percentage >= 90) {
+                    return 'A+';
+                } else if (percentage >= 80) {
+                    return 'A';
+                } else if (percentage >= 70) {
+                    return 'B';
+                } else if (percentage >= 60) {
+                    return 'C';
+                } else {
+                    return 'Fail';
+                }
+            }
+
+            // Function to show the preview section and hide the form
+            function showPreview() {
+                if (!validateForm()) {
+                    return; // Stop if form is not valid
+                }
+
+                // Populate preview data
+                // Student details - display entered values
+                previewStudentName.textContent = document.getElementById('studentName').value.trim();
+                previewFatherName.textContent = document.getElementById('fatherName').value.trim();
+                previewRollNumber.textContent = document.getElementById('rollNumber').value.trim();
+                previewStudentClass.textContent = document.getElementById('studentClass').value.trim();
+                // Academy name - display entered value
+                academyNamePreview.textContent = document.getElementById('academyName').value.trim();
+
+
+                // Populate subject results table
+                subjectResultsTableBody.innerHTML = ''; // Clear previous results
+                const subjectNames = subjectsContainer.querySelectorAll('.subject-name');
+                const subjectMarks = subjectsContainer.querySelectorAll('.subject-marks');
+                for (let i = 0; i < subjectNames.length; i++) {
+                    const row = document.createElement('tr');
+                    // Display entered subject name and marks
+                    row.innerHTML = `
+                        <td class="urdu-text">${subjectNames[i].value.trim()}</td>
+                        <td class="ltr-text">${subjectMarks[i].value.trim()}</td>
+                    `;
+                    subjectResultsTableBody.appendChild(row);
+                }
+
+                // Calculate and display summary
+                const results = calculateResults();
+                previewTotalMarks.textContent = results.totalMarks;
+                previewPercentage.textContent = results.percentage.toFixed(2); // Display percentage with 2 decimal places
+                previewGrade.textContent = results.grade;
+
+                // Handle logo upload
+                const logoFile = document.getElementById('academyLogo').files[0];
+                if (logoFile) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        academyLogoPreview.src = e.target.result;
+                    };
+                    reader.readAsDataURL(logoFile);
+                } else {
+                    // Use placeholder if no logo uploaded
+                     academyLogoPreview.src = "https://placehold.co/80x80/e2e8f0/a0aec0?text=Logo";
+                }
+
+                // Set date of issue
+                const today = new Date();
+                // Format date for display (e.g., 2023-10-27 or Oct 27, 2023)
+                dateOfIssue.textContent = today.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }); // Using en-US for LTR date format
+
+                // Toggle sections
+                formSection.classList.add('hidden');
+                previewSection.classList.remove('hidden');
+            }
+
+            // Function to show the form section and hide the preview
+            function showForm() {
+                formSection.classList.remove('hidden');
+                previewSection.classList.add('hidden');
+            }
+
+            // Function to generate PDF
+            function generatePdf() {
+                 // Get the element to convert (the result card)
+                 const element = document.getElementById('resultCard');
+
+                 // Options for PDF generation
+                 const options = {
+                     margin: [10, 10, 10, 10], // Top, Left, Bottom, Right margins in mm
+                     filename: `${document.getElementById('studentName').value.trim()}_ResultCard.pdf`,
+                     image: { type: 'jpeg', quality: 0.98 },
+                     html2canvas: { scale: 2 }, // Scale up for better resolution
+                     jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                 };
+
+                 // Generate PDF
+                 html2pdf().from(element).set(options).save().then(() => {
+                     alert('PDF generated successfully!');
+                 }).catch(error => {
+                     console.error('Error generating PDF:', error);
+                     alert('Failed to generate PDF. Please try again.');
+                 });
+            }
+        });
+    </script>
+
+</body>
+</html>
